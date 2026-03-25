@@ -1,125 +1,178 @@
 <html>
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Web Sandi</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Dekripsi Data</title>
 </head>
-<body bgcolor="#FFFFFF" text="#000000">
+<body bgcolor="#FFFFFF" text="#000000" style="font-family: 'Times New Roman', Times, serif; padding: 20px;">
 
-    <h1>Form Sandi Rahasia</h1>
+    <h1>Sistem Sandi V1.0</h1>
     <hr>
 
-    <div id="mode-creator">
-        <b>Insert Text:</b><br>
-        <textarea id="inputMsg" rows="5" style="width: 90%; max-width: 350px;"></textarea><br><br>
-        <button onclick="buatLink()">Submit</button>
-        <br><br>
+    <div id="menu-utama">
+        <h3>1. Buat Sandi (Hanya Code)</h3>
+        <textarea id="inputMsg" rows="3" style="width: 100%; max-width: 400px;"></textarea><br>
+        <button onclick="buatKode()">Generate Code</button><br><br>
+        <b>Copy Code Ini:</b><br>
+        <textarea id="outputCode" rows="2" style="width: 100%; max-width: 400px; background-color: #eee;" readonly></textarea>
         
-        <div id="hasil-link" style="display: none;">
-            <b>Copy Link Ini:</b><br>
-            <textarea id="outputLink" rows="4" style="width: 90%; max-width: 350px;" readonly></textarea>
-        </div>
+        <br><br><hr><br>
+
+        <h3>2. Pecahkan Sandi</h3>
+        <b>Paste Code Di Sini:</b><br>
+        <textarea id="inputDecode" rows="2" style="width: 100%; max-width: 400px;"></textarea><br>
+        <button onclick="inisialisasiTroll()">Mulai Dekripsi</button>
     </div>
 
-    <div id="mode-victim" style="display: none;">
-        <b>Pesan Terenkripsi:</b><br>
-        <textarea id="layar-sandi" rows="5" style="width: 90%; max-width: 350px;" readonly>MEMUAT...</textarea><br><br>
+    <div id="area-troll" style="display: none; text-align: left;">
+        <b>Proses Dekripsi Berjalan:</b><br>
+        <textarea id="layar-sandi" rows="5" style="width: 100%; max-width: 400px;" readonly>MEMUAT...</textarea><br><br>
         
-        <button id="btn-decode" onclick="klikDecode()">Decode</button>
-        <br><br>
+        <b id="pesan-biner" style="color: red; font-family: monospace;"></b><br><br>
         
-        <i><span id="status-teks">Status: Menunggu input pengguna...</span></i>
+        <button id="btn-decode" onclick="klikDecode()" style="padding: 10px 20px;">[ DECODE ]</button>
+        <br><br><br><br><br><br><br> <i><span id="status-teks">Klik tombol untuk memproses lapisan keamanan...</span></i>
     </div>
 
     <script>
-        // 20 Rumus Matematika
+        // 20 Rumus Matematika Modulo 26
         const rumus = [
-            (x) => (2*x + 5) % 26, (x) => (3*x + 7) % 26, (x) => (5*x + 11) % 26, (x) => (7*x + 2) % 26, (x) => (11*x + 3) % 26,
-            (x) => (17*x + 1) % 26, (x) => (19*x + 4) % 26, (x) => (23*x + 5) % 26, (x) => (25*x + 9) % 26, (x) => (x*x + 3) % 26,
-            (x) => (x*x + x + 1) % 26, (x) => (2*x*x + 5) % 26, (x) => (3*x*x + 2*x) % 26, (x) => (x*x*x + 2) % 26, (x) => (5*x*x + 7) % 26,
-            (x) => (7*x*x + 3*x) % 26, (x) => (11*x*x + 1) % 26, (x) => (13*x + 13) % 26, (x) => (17*x*x + 5) % 26, (x) => (19*x*x + 7*x + 2) % 26
+            (x) => (2*x + 5) % 26, (x) => (3*x + 7) % 26, (x) => (5*x + 11) % 26, (x) => (7*x + 2) % 26,
+            (x) => (x*x + 3) % 26, (x) => (2*x*x + 5) % 26, (x) => (13*x + 13) % 26, (x) => (19*x*x + 7*x + 2) % 26
         ];
-        
         const simbol = ["@", "#", "$", "_", "&", "-", "+", "(", "/", "£", "¢", "¥", "π", "√", "×", "`", "§", "∆", "~", "%", "^", "*", "=", "{", "}", "|"];
         
-        const urlParams = new URLSearchParams(window.location.search);
-        const encodedMsg = urlParams.get('m');
+        // Kumpulan ejekan biner
+        const binerEjekan = [
+            "01001110 01011001 01000101 01010010 01000001 01001000 00100000 01000001 01001010 01000001", // NYERAH AJA
+            "01001100 01001111 01010111 00100000 01001001 01010001", // LOW IQ
+            "01000010 01001111 01000100 01001111 01001000", // BODOH
+            "01000011 01010101 01001101 01000001 00100000 01010011 01000101 01000111 01001001 01001110 01001001 00111111" // CUMA SEGINI?
+        ];
+
         let pesanAsli = "";
+        let jumlahKlik = 0;
 
-        if (encodedMsg) {
-            document.getElementById('mode-creator').style.display = 'none';
-            document.getElementById('mode-victim').style.display = 'block';
-            
-            try {
-                pesanAsli = decodeURIComponent(atob(encodedMsg));
-                jalankanMesinTroll();
-            } catch (e) {
-                document.getElementById('layar-sandi').value = "Error: Invalid URL.";
-                document.getElementById('btn-decode').style.display = 'none';
-            }
-        }
-
-        function buatLink() {
+        // FUNGSI 1: BUAT KODE (Tanpa URL)
+        function buatKode() {
             let input = document.getElementById('inputMsg').value;
-            if (!input) { alert("Teks tidak boleh kosong."); return; }
-            
-            let base64Msg = btoa(encodeURIComponent(input));
-            let linkBaru = window.location.origin + window.location.pathname + "?m=" + base64Msg;
-            
-            document.getElementById('hasil-link').style.display = 'block';
-            document.getElementById('outputLink').value = linkBaru;
+            if (!input) { alert("Isi teksnya dulu."); return; }
+            // Bungkus pakai format khas
+            let kodeSandi = "SND-" + btoa(encodeURIComponent(input));
+            document.getElementById('outputCode').value = kodeSandi;
         }
 
-        function jalankanMesinTroll() {
-            let level = 1;
-            let jumlahKlik = 0;
-            // Target klik: Level 1=10 klik, Level 2=40 klik, Level 3=90 klik, dst.
-            let targetKlik = 10 * Math.pow(level, 2); 
-            
-            let layar = document.getElementById("layar-sandi");
-            let btn = document.getElementById("btn-decode");
-            let statusInfo = document.getElementById("status-teks");
+        // FUNGSI 2: CEK KODE INPUT
+        function inisialisasiTroll() {
+            let inputSandi = document.getElementById('inputDecode').value.trim();
+            if (!inputSandi.startsWith("SND-")) {
+                alert("Kode tidak valid. Harus diawali SND-");
+                return;
+            }
+            try {
+                // Buang "SND-" lalu decode
+                pesanAsli = decodeURIComponent(atob(inputSandi.substring(4)));
+                
+                // Pindah Tampilan
+                document.getElementById('menu-utama').style.display = 'none';
+                document.getElementById('area-troll').style.display = 'block';
+                
+                document.getElementById("layar-sandi").value = ubahKeSimbol(pesanAsli, 0);
+            } catch (e) {
+                alert("Sistem gagal memuat kode.");
+            }
+        }
 
-            function ubahKeSimbol(teks, indeksRumus) {
-                let hasil = "";
-                let teksLower = teks.toLowerCase();
-                for (let i = 0; i < teksLower.length; i++) {
-                    let kode = teksLower.charCodeAt(i);
-                    if (kode >= 97 && kode <= 122) {
-                        let x = kode - 97;
-                        let hasilRumus = Math.abs(rumus[indeksRumus](x));
-                        hasil += simbol[hasilRumus % 26];
-                    } else {
-                        hasil += teksLower[i];
-                    }
-                }
-                return hasil;
+        // MESIN PENGUBAH SIMBOL
+        function ubahKeSimbol(teks, indeksRumus) {
+            let hasil = "";
+            let teksLower = teks.toLowerCase();
+            for (let i = 0; i < teksLower.length; i++) {
+                let kode = teksLower.charCodeAt(i);
+                if (kode >= 97 && kode <= 122) {
+                    let x = kode - 97;
+                    let hasilRumus = Math.abs(rumus[indeksRumus](x));
+                    hasil += simbol[hasilRumus % 26];
+                } else { hasil += teksLower[i]; }
+            }
+            return hasil;
+        }
+
+        // MESIN PENYIKSAAN UTAMA (Klik Decode)
+        window.klikDecode = function() {
+            jumlahKlik++;
+            let btn = document.getElementById("btn-decode");
+            let layar = document.getElementById("layar-sandi");
+            let statusInfo = document.getElementById("status-teks");
+            let layarBiner = document.getElementById("pesan-biner");
+
+            // 1. Acak Sandi
+            let rumusAcak = Math.floor(Math.random() * rumus.length); 
+            layar.value = ubahKeSimbol(pesanAsli, rumusAcak);
+            statusInfo.innerText = "Klik terdaftar: " + jumlahKlik;
+
+            // 2. Sarkasme Biner (Setiap kelipatan 25 klik)
+            if (jumlahKlik % 25 === 0) {
+                let indeksBiner = (jumlahKlik / 25) % binerEjekan.length;
+                layarBiner.innerText = "SYSTEM MSG: " + binerEjekan[indeksBiner];
+            } else if (jumlahKlik % 25 === 5) {
+                // Hilang setelah 5 klik dari pesan biner muncul
+                layarBiner.innerText = "";
             }
 
-            layar.value = ubahKeSimbol(pesanAsli, 0);
-
-            window.klikDecode = function() {
-                jumlahKlik++;
-                let rumusAcak = Math.floor(Math.random() * 20); 
-                layar.value = ubahKeSimbol(pesanAsli, rumusAcak);
-                statusInfo.innerText = "Sistem sibuk... (" + jumlahKlik + " klik)";
-
-                if (jumlahKlik >= targetKlik) {
-                    layar.value = pesanAsli;
-                    btn.disabled = true;
-                    statusInfo.innerText = "Berhasil! Teks terbuka selama 2 detik.";
-
+            // 3. Fase Menghilang (Klik 100+)
+            if (jumlahKlik >= 100) {
+                if (jumlahKlik % 3 === 0) {
+                    btn.style.display = 'none'; // Tombol lenyap
+                    statusInfo.innerText = "Error: UI terputus. Mengembalikan tombol...";
+                    
+                    // Rumus waktu muncul lagi
+                    let waktuTunggu = (jumlahKlik % 5 + 1) * 600; 
                     setTimeout(() => {
-                        level++;
-                        targetKlik = 10 * Math.pow(level, 2);
-                        jumlahKlik = 0;
-                        
-                        layar.value = ubahKeSimbol(pesanAsli, Math.floor(Math.random() * 20));
-                        btn.disabled = false;
-                        statusInfo.innerText = "Koneksi terputus. Target klik meningkat ke level " + level + ".";
-                    }, 2000); 
+                        btn.style.display = 'inline-block';
+                        statusInfo.innerText = "Klik terdaftar: " + jumlahKlik;
+                    }, waktuTunggu);
                 }
-            };
-        }
+            }
+
+            // 4. Fase Membesar (Klik 150+)
+            let skala = 1;
+            if (jumlahKlik >= 150) {
+                skala = 1 + ((jumlahKlik - 150) * 0.05); // Bengkak terus
+            }
+
+            // 5. Fase Teleportasi Acak (Klik 200+)
+            if (jumlahKlik >= 200) {
+                btn.style.position = 'fixed';
+                let acakX = Math.floor(Math.random() * 70); // Max 70% biar ga keluar layar
+                let acakY = Math.floor(Math.random() * 70) + 10;
+                btn.style.left = acakX + '%';
+                btn.style.top = acakY + '%';
+                btn.style.zIndex = '9999';
+            }
+
+            // Gabungkan efek Skala (Berlaku untuk fase 150 dan 200)
+            btn.style.transform = `scale(${skala})`;
+
+            // 6. GARIS FINISH (Klik 250 - Baru dikasih lihat)
+            if (jumlahKlik === 250) {
+                layar.value = pesanAsli; // Tampilkan teks asli!
+                btn.style.display = 'none'; // Tombol mati selamanya
+                layarBiner.innerText = "SYSTEM FATAL ERROR: ENCRYPTION BROKEN";
+                statusInfo.innerText = "PESAN TERBACA SELAMA 2 DETIK!";
+
+                setTimeout(() => {
+                    // Balik reset gila-gilaan
+                    jumlahKlik = 0;
+                    layar.value = ubahKeSimbol(pesanAsli, Math.floor(Math.random() * 8));
+                    btn.style.display = 'inline-block';
+                    btn.style.position = 'static'; // Balikin posisi normal
+                    btn.style.transform = 'scale(1)'; // Balikin ukuran
+                    statusInfo.innerText = "Sistem mengunci ulang ke Level 2.";
+                    layarBiner.innerText = "";
+                    alert("Waktu habis! Mulai dari awal lagi ya hehe.");
+                }, 2000); 
+            }
+        };
     </script>
 </body>
 </html>
