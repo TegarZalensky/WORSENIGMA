@@ -3,108 +3,299 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enigma Decode</title>
+    <title>X-TREME SEKR3T M3SSAG3 SYS v1.0 (c) 2008</title>
     <style>
-        body { background-color: #0a0a0a; color: #00ff00; font-family: 'Courier New', Courier, monospace; text-align: center; padding-top: 20%; }
-        #layar-sandi { font-size: 24px; letter-spacing: 3px; margin-bottom: 30px; word-wrap: break-word; padding: 0 20px; min-height: 50px; }
-        button { background-color: #00ff00; color: #000; border: none; padding: 15px 30px; font-size: 18px; font-weight: bold; cursor: pointer; border-radius: 5px; }
-        button:active { background-color: #00cc00; transform: scale(0.95); }
-        button:disabled { background-color: #555; color: #222; cursor: not-allowed; }
-        #status { margin-top: 20px; font-size: 14px; color: #888; }
+        /* AESTHETIC JADUL 2008 CSS */
+        body { 
+            background-color: #000000; 
+            color: #00ff00; 
+            font-family: 'Courier New', Courier, monospace; 
+            margin: 0; padding: 20px;
+            background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8Z5+AAAAIklEQVQIW2NkQAKrVq36z8gAFWNgYGBkgAsgFcNlkEwAAL69CQXp459eAAAAAElFTkSuQmCC'); /* Scanline effect */
+        }
+        
+        a { color: #ffff00; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+
+        .container {
+            width: 90%; max-width: 800px;
+            margin: 0 auto;
+            border: 4px outset #555;
+            background-color: #111;
+            padding: 10px;
+        }
+
+        .header-table { width: 100%; border-collapse: collapse; margin-bottom: 15px; border: 2px solid #00ff00; }
+        .header-table td { padding: 5px; text-align: center; }
+        .title { font-size: 20px; font-weight: bold; text-transform: uppercase; color: #ff0000; text-shadow: 2px 2px #550000; }
+
+        .content-area { border: 2px inset #555; padding: 15px; background-color: #050505; min-height: 300px; text-align: center;}
+
+        /* Input & Buttons style jadul */
+        textarea {
+            width: 95%; height: 100px;
+            background-color: #000; color: #00ff00;
+            border: 2px solid #00ff00; font-family: 'Courier New', monospace;
+            padding: 5px; margin-bottom: 10px; resize: none;
+        }
+        input[type="text"] {
+            width: 95%; background-color: #000; color: #ffff00;
+            border: 2px solid #ffff00; padding: 5px; font-family: 'Courier New', monospace;
+            margin-bottom: 10px; text-align: center;
+        }
+
+        .btn-retro {
+            background-color: #333; color: #fff;
+            border: 3px outset #777; padding: 10px 20px;
+            font-family: 'Courier New', monospace; font-weight: bold;
+            cursor: pointer; text-transform: uppercase; margin: 5px;
+        }
+        .btn-retro:active { border: 3px inset #777; background-color: #222; }
+        .btn-retro:disabled { color: #555; border-color: #444; cursor: not-allowed; }
+
+        #display-sandi { 
+            font-size: 22px; letter-spacing: 3px; margin: 20px 0; 
+            word-wrap: break-word; color: #00ff00; font-weight: bold; 
+            min-height: 60px; padding: 10px; border: 1px dashed #333;
+        }
+
+        .footer { margin-top: 15px; text-align: center; font-size: 11px; color: #888; border-top: 1px solid #444; padding-top: 5px; }
+
+        /* Hiding sections based on mode */
+        .mode-encoder, .mode-decoder { display: none; }
     </style>
 </head>
 <body>
 
-    <div id="layar-sandi">MENGINISIALISASI SANDI...</div>
-    <button id="btn-decode" onclick="klikDecode()">[ DECODE ]</button>
-    <div id="status">Target sistem: Terkunci</div>
+<div class="container">
+    <table class="header-table">
+        <tr>
+            <td><img src="https://web.archive.org/web/20090830030553/http://geocities.com/SiliconValley/Hills/1044/construction.gif" alt="under construction"></td>
+            <td class="title">*** ULTRA ENIGMA TROLL SYS v1.0 ***</td>
+            <td><img src="https://web.archive.org/web/20090830030553/http://geocities.com/SiliconValley/Hills/1044/construction.gif" alt="under construction"></td>
+        </tr>
+        <tr>
+            <td colspan="3">
+                <marquee scrollamount="3">Selamat datang di teknologi enkripsi tercanggih tahun 2008!! Jangan lupakan kunci rahasia kita... Trik Matematika Jadul!! Pesan akan hancur dalam 2 detik!!</marquee>
+            </td>
+        </tr>
+    </table>
 
-    <script>
-        // Pesan rahasia asli
-        const pesanAsli = "woi bangsat semua orang punya rencana tai! Gak usah alesan aja";
+    <div class="content-area">
         
-        // 26 Simbol pemetaan
-        const simbol = ["@", "#", "$", "_", "&", "-", "+", "(", "/", "£", "¢", "¥", "π", "√", "×", "`", "§", "∆", "~", "%", "^", "*", "=", "{", "}", "|"];
+        <div id="section-encoder" class="mode-encoder">
+            <h3>>>> BUAT PESAN RAHASIA BARU <<<</h3>
+            <p style="font-size:12px; color: #888;">Input teks di bawah ini (hanya a-z, spasi & tanda baca suport)</p>
+            <textarea id="input-pesan-asli" placeholder="Ketik pesan galau/marah/rahasiamu disini..."></textarea>
+            <br>
+            <button class="btn-retro" onclick="generateSecretLink()">[ GENERATE LINK RAHiSiA ]</button>
+            <br><br>
+            <div id="result-link-area" style="display:none; border: 1px solid #ffff00; padding: 10px;">
+                <p style="color: #ffff00; margin-top:0;">SALIN LINK DI BAWAH INI & KIRIM KE TARGET:</p>
+                <input type="text" id="output-link" readonly onclick="this.select()">
+            </div>
+        </div>
 
-        // Contoh 5 dari 20 Rumus Matematika (kamu bisa tambah sampai 20 array function)
-        // x adalah urutan abjad (0-25)
-        const rumus = [
-            (x) => (2 * x + 5) % 26,
-            (x) => (3 * x + 7) % 26,
-            (x) => (5 * x + 11) % 26,
-            (x) => (7 * x + 2) % 26,
-            (x) => (Math.pow(x, 2) + 3) % 26
-        ];
+        <div id="section-decoder" class="mode-decoder">
+            <h3>>>> DEKREPSI PESAN MASUK <<<</h3>
+            <div id="status-perisai" style="color: #ff0000; font-weight:bold; margin-bottom:10px;">SISTEM KEAMANAN: AKTIF</div>
+            
+            <div id="display-sandi">MEMUAT DATA...</div>
+            
+            <p id="instruksi-klik">Butuh otorisasi manual. Hancurkan perisai keamanan dengan klik tombol di bawah.</p>
+            <button id="btn-decode" class="btn-retro" onclick="klikDecode()">[ HANCURKAN PERISAI ]</button>
+            <br>
+            <div id="status-bar" style="margin-top: 15px; font-size: 14px; color: #888;">Menunggu klik pertama...</div>
+        </div>
 
-        let percobaanKe = 1; // n
-        let jumlahKlik = 0;
-        let targetKlik = hitungTarget(percobaanKe);
-        let layar = document.getElementById("layar-sandi");
-        let btn = document.getElementById("btn-decode");
-        let status = document.getElementById("status");
+    </div>
 
-        // Fungsi persamaan matematika untuk target klik: T(n) = 10n^2 + 10n
-        function hitungTarget(n) {
-            return (10 * Math.pow(n, 2)) + (10 * n);
+    <div class="footer">
+        Terbaik dilihat di Internet Explorer 7.0 | Resolusi 1024x768 | 
+        Pengunjung ke: <img src="https://web.archive.org/web/20091027103211/http://geocities.com/TimesSquare/Alley/7800/digits/0.gif" height="15"><img src="https://web.archive.org/web/20091027103211/http://geocities.com/TimesSquare/Alley/7800/digits/5.gif" height="15"><img src="https://web.archive.org/web/20091027103211/http://geocities.com/TimesSquare/Alley/7800/digits/8.gif" height="15">
+        <br>
+        Copyright (c) 2008 X-TREME K0D3RZ Crew. All rights reserved.
+    </div>
+</div>
+
+<script>
+    // ==========================================
+    // KONFIGURASI KRIPTOGRAFI (20 Rumus Matematika)
+    // ==========================================
+    const simbol = ["@", "#", "$", "_", "&", "-", "+", "(", "/", "£", "¢", "¥", "π", "√", "×", "`", "§", "∆", "~", "%", "^", "*", "=", "{", "}", "|"];
+
+    // Math Engine: Kumpulan rumus Affine Cipher (ax + b) mod 26
+    // 'a' harus Koprim dengan 26 agar bisa didecode.
+    const invers_a = { 1:1, 3:9, 5:21, 7:15, 9:3, 11:19, 15:7, 17:23, 19:11, 21:5, 23:17, 25:25 };
+
+    const keys = [
+        {a:3, b:1}, {a:5, b:2}, {a:7, b:3}, {a:9, b:4}, {a:11, b:5},
+        {a:15, b:6}, {a:17, b:7}, {a:19, b:8}, {a:21, b:9}, {a:23, b:10},
+        {a:25, b:11}, {a:3, b:12}, {a:5, b:13}, {a:7, b:14}, {a:9, b:15},
+        {a:11, b:16}, {a:15, b:17}, {a:17, b:18}, {a:19, b:19}, {a:21, b:20}
+    ];
+
+    // Fungsi inti Matematika
+    function mod(n, m) { return ((n % m) + m) % m; }
+
+    function encodeChar(char, keyIndex) {
+        let code = char.toLowerCase().charCodeAt(0);
+        if (code >= 97 && code <= 122) {
+            let x = code - 97;
+            let key = keys[keyIndex];
+            let hasilUmur = mod((key.a * x + key.b), 26);
+            return simbol[hasilUmur];
+        }
+        return char; // karakter non-abjad tidak berubah
+    }
+
+    function decodeChar(simbolChar, keyIndex) {
+        let sIndex = simbol.indexOf(simbolChar);
+        if (sIndex !== -1) {
+            let key = keys[keyIndex];
+            let a_inv = invers_a[key.a];
+            let x = mod(a_inv * (sIndex - key.b), 26);
+            return String.fromCharCode(x + 97);
+        }
+        return simbolChar;
+    }
+
+    // Mesin pemroses teks penuh
+    function translateTeks(teks, keyIndex, mode='e') {
+        let hasil = "";
+        for (let i = 0; i < teks.length; i++) {
+            hasil += (mode === 'e') ? encodeChar(teks[i], keyIndex) : decodeChar(teks[i], keyIndex);
+        }
+        return hasil;
+    }
+
+    // ==========================================
+    // LOGIKA CORE & UI
+    // ==========================================
+    
+    // Cek Mode halaman berdasarkan URL parameter
+    const urlParams = new URLSearchParams(window.location.search);
+    const dataPesanUrl = urlParams.get('data');
+    const keyIdUrl = urlParams.get('v'); // v untuk 'version' / key index
+
+    let modeAktif = "encoder";
+
+    if (dataPesanUrl && keyIdUrl) {
+        modeAktif = "decoder";
+        document.getElementById('section-decoder').style.display = "block";
+        initDecoder();
+    } else {
+        modeAktif = "encoder";
+        document.getElementById('section-encoder').style.display = "block";
+    }
+
+    // --- LOGIKA ENCODER ---
+    function generateSecretLink() {
+        const pesanAsli = document.getElementById('input-pesan-asli').value;
+        if (!pesanAsli) { alert("Isi pesannya dulu, Bro!"); return; }
+
+        // Pilih rumus acak untuk encode awal
+        const keyIndex = Math.floor(Math.random() * keys.length);
+        const pesanTersandi = translateTeks(pesanAsli, keyIndex, 'e');
+
+        // Kamuflase Key Index (tambah angka acak agar tidak kentara)
+        const vParam = (keyIndex * 13) + 7; 
+
+        // Bangun URL
+        const currentUrl = window.location.href.split('?')[0];
+        // Gunakan encodeURIComponent agar simbol aman di URL
+        const finalUrl = `${currentUrl}?data=${encodeURIComponent(pesanTersandi)}&v=${vParam}`;
+
+        document.getElementById('output-link').value = finalUrl;
+        document.getElementById('result-link-area').style.display = "block";
+    }
+
+    // --- LOGIKA DECODER (The Troll Part) ---
+    let percobaanKe = 1;
+    let jumlahKlik = 0;
+    let targetKlik = 0;
+    let realKeyIndex = 0;
+    let teksSandiMasuk = "";
+
+    const layarSandi = document.getElementById('display-sandi');
+    const btnDecode = document.getElementById('btn-decode');
+    const statusBar = document.getElementById('status-bar');
+    const statusPerisai = document.getElementById('status-perisai');
+
+    // Persamaan matematika target klik: T(n) = 10n^2 + 10n
+    function hitungTarget(n) { return (10 * Math.pow(n, 2)) + (10 * n); }
+
+    function initDecoder() {
+        teksSandiMasuk = dataPesanUrl; // Data asli dari URL (sudah simbol)
+        
+        // Dekamuflase Key Index
+        realKeyIndex = Math.floor((parseInt(keyIdUrl) - 7) / 13);
+        
+        // Cek validitas key (safety check)
+        if (isNaN(realKeyIndex) || realKeyIndex < 0 || realKeyIndex >= keys.length) {
+            layarSandi.innerText = "ERROR: DATA KORUP / LINK PALSU!";
+            btnDecode.disabled = true;
+            return;
         }
 
-        // Mesin Pengubah Teks ke Simbol
-        function generateSandi(teks, indeksRumus) {
-            let hasil = "";
-            let teksLower = teks.toLowerCase();
+        layarSandi.innerText = teksSandiMasuk;
+        targetKlik = hitungTarget(percobaanKe);
+        statusBar.innerText = `Perisai Keamanan Level ${percobaanKe}. Butuh ${targetKlik} klik otorisasi.`;
+    }
+
+    function klikDecode() {
+        jumlahKlik++;
+        
+        // 1. Mutasi Visual (Troll): Encode pesan rahasia JELAS pakai rumus acak setiap klik
+        let dummyKeyIndex = Math.floor(Math.random() * keys.length);
+        
+        // Trik: Kita tidak tahu pesan aslinya disini, jadi kita decode dulu pakai kunci asli, 
+        // lalu encode lagi pakai kunci palsu. Biar simbolnya berubah terus.
+        let temporaryDecoded = translateTeks(teksSandiMasuk, realKeyIndex, 'd');
+        let glitchedTeks = translateTeks(temporaryDecoded, dummyKeyIndex, 'e');
+        
+        layarSandi.innerText = glitchedTeks;
+        layarSandi.style.color = "#ffff00"; // Kuning saat loading
+
+        statusBar.innerText = `Klik: ${jumlahKlik} / ${targetKlik} (Otorisasi sedang diproses...)`;
+
+        // 2. Cek apakah mencapai target
+        if (jumlahKlik >= targetKlik) {
+            btnDecode.disabled = true;
             
-            for (let i = 0; i < teksLower.length; i++) {
-                let charCode = teksLower.charCodeAt(i);
-                // Jika huruf a-z
-                if (charCode >= 97 && charCode <= 122) {
-                    let x = charCode - 97; // a=0, b=1...
-                    let hasilRumus = rumus[indeksRumus](x);
-                    hasil += simbol[Math.abs(hasilRumus)]; // Hindari minus
-                } else {
-                    // Biarkan spasi dan tanda baca tetap sama
-                    hasil += teksLower[i];
-                }
-            }
-            return hasil;
+            // JEPRET! Decode PESAN ASLI
+            let pesanAsliTerbuka = translateTeks(teksSandiMasuk, realKeyIndex, 'd');
+            
+            layarSandi.innerText = pesanAsliTerbuka.toUpperCase();
+            layarSandi.style.color = "#ff0000"; // Merah dramatis
+            layarSandi.style.backgroundColor = "#fff"; // Flash effect
+            statusPerisai.innerText = "SISTEM JEBOL! MEMBACA DATA...";
+            statusBar.innerText = "PERINGATAN: PESAN AKAN HANCUR DALAM 2 DETIK!";
+
+            // 3. Timer Self-Destruct (2 Detik)
+            setTimeout(() => {
+                // Reset visual
+                layarSandi.style.color = "#00ff00";
+                layarSandi.style.backgroundColor = "transparent";
+                
+                // Siapkan level berikutnya (n+1)
+                percobaanKe++;
+                targetKlik = hitungTarget(percobaanKe);
+                jumlahKlik = 0;
+
+                // Enkripsi ulang teks asli pakai rumus acak (Biar wujud simbolnya beda lagi)
+                let newDummyKey = Math.floor(Math.random() * keys.length);
+                layarSandi.innerText = translateTeks(pesanAsliTerbuka, newDummyKey, 'e');
+
+                btnDecode.disabled = false;
+                statusPerisai.innerText = "SISTEM KEAMANAN: RE-AKTIF (LEVEL UP)";
+                statusBar.innerText = `Keamanan pulih. Butuh ${targetKlik} klik untuk akses berikutnya.`;
+                
+                alert("WAKTU HABIS! Pesan telah dienkripsi ulang dengan algoritma baru.");
+            }, 2000);
         }
+    }
+</script>
 
-        // Tampilan awal acak
-        layar.innerText = generateSandi(pesanAsli, 0);
-
-        // Fungsi saat tombol diklik
-        function klikDecode() {
-            jumlahKlik++;
-            
-            // 1. Acak rumus setiap kali klik!
-            let rumusAcak = Math.floor(Math.random() * rumus.length);
-            layar.innerText = generateSandi(pesanAsli, rumusAcak);
-            
-            status.innerText = `Klik: ${jumlahKlik} / ??? (Rumus aktif: #${rumusAcak + 1})`;
-
-            // 2. Cek apakah klik sudah mencapai target
-            if (jumlahKlik >= targetKlik) {
-                // JEPRET! Tampilkan pesan asli
-                layar.innerText = pesanAsli.toUpperCase();
-                layar.style.color = "#ff0000"; // Ubah warna jadi merah biar dramatis
-                btn.disabled = true; // Kunci tombol
-                status.innerText = "SISTEM TERBUKA SELAMA 2 DETIK!";
-
-                // 3. Timer 2 detik sebelum dikunci lagi
-                setTimeout(() => {
-                    percobaanKe++; // Naik level
-                    targetKlik = hitungTarget(percobaanKe); // Hitung target baru pakai rumus
-                    jumlahKlik = 0; // Reset klik
-                    
-                    // Kembalikan ke tampilan sandi
-                    layar.style.color = "#00ff00";
-                    let rumusBaru = Math.floor(Math.random() * rumus.length);
-                    layar.innerText = generateSandi(pesanAsli, rumusBaru);
-                    
-                    btn.disabled = false; // Buka kunci tombol
-                    status.innerText = `Sistem kembali terkunci. (Level Kemanan Naik)`;
-                }, 2000);
-            }
-        }
-    </script>
 </body>
 </html>
