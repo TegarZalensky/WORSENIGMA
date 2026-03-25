@@ -1,318 +1,220 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>X-TREME SEKR3T M3SSAG3 SYS v1.0 (c) 2008</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ULTRA ENIGMA SYSTEM</title>
     <style>
-        /* AESTHETIC JADUL 2008 + RESPONSIVE MOBILE CSS */
-        * {
-            box-sizing: border-box; /* Kunci utama biar elemen gak keluar batas layar */
-        }
-
+        /* CSS FIX: Agar responsif di HP dan tidak keluar layar */
+        * { box-sizing: border-box; }
         body { 
-            background-color: #000000; 
+            background-color: #050505; 
             color: #00ff00; 
             font-family: 'Courier New', Courier, monospace; 
-            margin: 0; 
-            padding: 15px 10px; /* Padding dinamis untuk mobile */
-            background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8Z5+AAAAIklEQVQIW2NkQAKrVq36z8gAFWNgYGBkgAsgFcNlkEwAAL69CQXp459eAAAAAElFTkSuQmCC'); 
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
+            text-align: center; 
+            margin: 0;
+            padding: 10px;
+            overflow-x: hidden;
         }
-        
-        a { color: #ffff00; text-decoration: none; }
-        a:hover { text-decoration: underline; }
-
         .container {
-            width: 100%; 
-            max-width: 600px; /* Maksimal lebar untuk tablet/PC */
-            border: 4px outset #555;
-            background-color: #111;
-            padding: 10px;
-            box-shadow: 0px 0px 15px rgba(0, 255, 0, 0.2);
-        }
-
-        /* Header fleksibel untuk layar sempit */
-        .header-flex { 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            gap: 10px;
-            border: 2px solid #00ff00; 
-            padding: 10px;
-            margin-bottom: 15px; 
-            text-align: center;
-            flex-wrap: wrap; /* Kalau layar terlalu kecil, elemen numpuk ke bawah */
-        }
-        
-        .title { 
-            font-size: clamp(16px, 4vw, 22px); /* Teks mengecil otomatis di HP kecil */
-            font-weight: bold; text-transform: uppercase; 
-            color: #ff0000; text-shadow: 2px 2px #550000; 
-        }
-
-        .marquee-box {
+            border: 2px solid #00ff00;
+            padding: 15px;
             width: 100%;
-            border-top: 1px dashed #00ff00;
-            margin-top: 5px;
-            padding-top: 5px;
-            font-size: 14px;
+            max-width: 500px;
+            margin: 0 auto;
+            background-color: #0a0a0a;
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.2);
         }
-
-        .content-area { 
-            border: 2px inset #555; 
-            padding: 20px 15px; 
-            background-color: #050505; 
-            min-height: 250px; 
-            text-align: center;
-        }
-
-        /* Input & Buttons style jadul tapi Mobile-Friendly */
-        textarea, input[type="text"] {
-            width: 100%; 
-            background-color: #000; color: #00ff00;
-            border: 2px solid #00ff00; font-family: 'Courier New', monospace;
-            padding: 12px; margin-bottom: 15px; 
-            font-size: 16px; /* Mencegah auto-zoom di iPhone */
-        }
+        h2 { color: #ff0000; font-size: 20px; line-height: 1.5; margin: 10px 0; }
         
-        textarea { height: 120px; resize: none; }
-        input[type="text"] { color: #ffff00; border-color: #ffff00; text-align: center; word-break: break-all; }
+        /* Navigasi Tab */
+        .menu { display: flex; gap: 10px; margin-bottom: 20px; }
+        .menu button { flex: 1; padding: 10px; font-size: 14px; background-color: #222; }
+        .menu button.active { background-color: #00ff00; color: #000; }
 
-        .btn-retro {
-            width: 100%; /* Tombol melebar penuh di HP biar gampang dipencet */
-            background-color: #333; color: #fff;
-            border: 3px outset #777; padding: 15px;
-            font-family: 'Courier New', monospace; font-weight: bold;
-            font-size: 16px; cursor: pointer; text-transform: uppercase; 
-            margin: 5px 0; touch-action: manipulation; /* Mencegah delay tap di mobile */
+        /* Input dan Teks */
+        textarea { 
+            width: 100%; 
+            height: 100px; 
+            background-color: #000; 
+            color: #00ff00; 
+            border: 1px dashed #00ff00; 
+            padding: 10px; 
+            font-family: 'Courier New', Courier, monospace;
+            margin-bottom: 15px;
+            resize: vertical;
         }
-        .btn-retro:active { border: 3px inset #777; background-color: #222; transform: scale(0.98); }
-        .btn-retro:disabled { color: #555; border-color: #444; cursor: not-allowed; transform: none; }
-
-        #display-sandi { 
-            font-size: clamp(20px, 5vw, 28px); 
-            letter-spacing: 2px; margin: 20px 0; 
-            word-wrap: break-word; color: #00ff00; font-weight: bold; 
-            min-height: 80px; padding: 15px; border: 1px dashed #333;
-            display: flex; justify-content: center; align-items: center;
+        button { 
+            width: 100%;
+            background-color: #333; 
+            color: #fff; 
+            border: 2px solid #555; 
+            padding: 15px; 
+            font-size: 16px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            font-family: 'Courier New', Courier, monospace;
+            margin-bottom: 10px;
         }
-
-        .footer { 
-            margin-top: 15px; text-align: center; font-size: 11px; 
-            color: #888; border-top: 1px solid #444; padding-top: 10px; 
+        button:active { transform: scale(0.98); }
+        button:disabled { background-color: #111; color: #444; cursor: not-allowed; border-color: #333; }
+        
+        /* Area Game */
+        #game-area { border-top: 1px solid #333; padding-top: 20px; margin-top: 20px; }
+        #layar-sandi { 
+            font-size: 22px; 
+            letter-spacing: 2px; 
+            margin: 20px 0; 
+            word-wrap: break-word; 
+            min-height: 60px; 
+            color: #fff;
         }
-
-        /* Hiding sections based on mode */
-        .mode-encoder, .mode-decoder { display: none; }
+        .status-text { font-size: 13px; color: #888; margin-bottom: 15px; }
+        .warning { color: #ff0000; font-weight: bold; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div class="header-flex">
-        <img src="https://web.archive.org/web/20090830030553/http://geocities.com/SiliconValley/Hills/1044/construction.gif" alt="under construction" width="30">
-        <div class="title">*** ULTRA ENIGMA TROLL ***</div>
-        <img src="https://web.archive.org/web/20090830030553/http://geocities.com/SiliconValley/Hills/1044/construction.gif" alt="under construction" width="30">
-        <div class="marquee-box">
-            <marquee scrollamount="4">Selamat datang di teknologi enkripsi 2008!! Jangan lupakan kunci rahasia kita... Trik Matematika Jadul!! Pesan akan hancur dalam 2 detik!!</marquee>
-        </div>
-    </div>
+    <div class="container">
+        <h2>***<br>ULTRA ENIGMA<br>V1.0<br>***</h2>
+        <p class="status-text">SECURE TERMINAL CONNECTION</p>
+        <hr style="border: 1px dashed #00ff00; margin-bottom: 20px;">
 
-    <div class="content-area">
-        
-        <div id="section-encoder" class="mode-encoder">
-            <h3>>>> BUAT PESAN RAHASIA <<<</h3>
-            <p style="font-size:12px; color: #888;">Input teks di bawah ini (a-z, spasi & tanda baca)</p>
-            <textarea id="input-pesan-asli" placeholder="Ketik pesan galau/marah/rahasiamu disini..."></textarea>
-            <button class="btn-retro" onclick="generateSecretLink()">[ GENERATE LINK RAHASIA ]</button>
+        <div class="menu">
+            <button id="btn-tab-enc" class="active" onclick="switchTab('encrypt')">CREATE CODE</button>
+            <button id="btn-tab-dec" onclick="switchTab('decrypt')">DECODE SECRETS</button>
+        </div>
+
+        <div id="sec-encrypt">
+            <p class="status-text">>>> INPUT CLASSIFIED MESSAGE <<<</p>
+            <textarea id="inputMsg" placeholder="Type secret message here..."></textarea>
+            <button onclick="generateCode()">[ GENERATE ENIGMA CODE ]</button>
             
-            <div id="result-link-area" style="display:none; border: 1px solid #ffff00; padding: 15px; margin-top: 15px; background: #1a1a00;">
-                <p style="color: #ffff00; margin-top:0; font-size:14px;">SALIN LINK DI BAWAH & KIRIM KE TARGET:</p>
-                <input type="text" id="output-link" readonly onclick="this.select()">
-                <p style="font-size: 11px; color: #aaa; margin-bottom: 0;">(Tahan link untuk mencopy di HP)</p>
+            <div id="output-area" style="display: none; margin-top: 15px;">
+                <p class="status-text">COPY THIS CODE & SEND TO VICTIM:</p>
+                <textarea id="outputCode" readonly style="color: #ffeb3b; border-color: #ffeb3b;"></textarea>
             </div>
         </div>
 
-        <div id="section-decoder" class="mode-decoder">
-            <h3>>>> DEKRIPSI PESAN <<<</h3>
-            <div id="status-perisai" style="color: #ff0000; font-weight:bold; margin-bottom:10px; font-size: 14px;">SISTEM KEAMANAN: AKTIF</div>
-            
-            <div id="display-sandi">MEMUAT DATA...</div>
-            
-            <p id="instruksi-klik" style="font-size: 13px;">Hancurkan perisai keamanan dengan klik tombol di bawah berkali-kali.</p>
-            <button id="btn-decode" class="btn-retro" onclick="klikDecode()">[ HANCURKAN PERISAI ]</button>
-            <div id="status-bar" style="margin-top: 15px; font-size: 14px; color: #aaa;">Menunggu klik pertama...</div>
+        <div id="sec-decrypt" style="display: none;">
+            <div id="input-decrypt-area">
+                <p class="status-text">>>> PASTE ENIGMA CODE HERE <<<</p>
+                <textarea id="inputCode" placeholder="Paste the code starting with ENIGMA-..."></textarea>
+                <button onclick="initSystem()">[ INITIALIZE SYSTEM ]</button>
+            </div>
+
+            <div id="game-area" style="display: none;">
+                <p class="warning">WARNING: HEAVY ENCRYPTION DETECTED</p>
+                <div id="layar-sandi">AWAITING SEQUENCE...</div>
+                <button id="btn-clicker" onclick="klikDecode()">[ BREAK SHIELD ]</button>
+                <div id="status-victim" class="status-text">System Status: Locked</div>
+            </div>
         </div>
-
     </div>
 
-    <div class="footer">
-        Resolusi Auto-Detect | Pengunjung ke: 
-        <img src="https://web.archive.org/web/20091027103211/http://geocities.com/TimesSquare/Alley/7800/digits/0.gif" height="12">
-        <img src="https://web.archive.org/web/20091027103211/http://geocities.com/TimesSquare/Alley/7800/digits/5.gif" height="12">
-        <img src="https://web.archive.org/web/20091027103211/http://geocities.com/TimesSquare/Alley/7800/digits/8.gif" height="12">
-        <br>
-        Copyright (c) 2008 X-TREME K0D3RZ Crew.
-    </div>
-</div>
-
-<script>
-    // ==========================================
-    // KONFIGURASI KRIPTOGRAFI (20 Rumus Matematika)
-    // ==========================================
-    const simbol = ["@", "#", "$", "_", "&", "-", "+", "(", "/", "£", "¢", "¥", "π", "√", "×", "`", "§", "∆", "~", "%", "^", "*", "=", "{", "}", "|"];
-    const invers_a = { 1:1, 3:9, 5:21, 7:15, 9:3, 11:19, 15:7, 17:23, 19:11, 21:5, 23:17, 25:25 };
-
-    const keys = [
-        {a:3, b:1}, {a:5, b:2}, {a:7, b:3}, {a:9, b:4}, {a:11, b:5},
-        {a:15, b:6}, {a:17, b:7}, {a:19, b:8}, {a:21, b:9}, {a:23, b:10},
-        {a:25, b:11}, {a:3, b:12}, {a:5, b:13}, {a:7, b:14}, {a:9, b:15},
-        {a:11, b:16}, {a:15, b:17}, {a:17, b:18}, {a:19, b:19}, {a:21, b:20}
-    ];
-
-    function mod(n, m) { return ((n % m) + m) % m; }
-
-    function encodeChar(char, keyIndex) {
-        let code = char.toLowerCase().charCodeAt(0);
-        if (code >= 97 && code <= 122) {
-            let x = code - 97;
-            let key = keys[keyIndex];
-            return simbol[mod((key.a * x + key.b), 26)];
-        }
-        return char;
-    }
-
-    function decodeChar(simbolChar, keyIndex) {
-        let sIndex = simbol.indexOf(simbolChar);
-        if (sIndex !== -1) {
-            let key = keys[keyIndex];
-            let a_inv = invers_a[key.a];
-            return String.fromCharCode(mod(a_inv * (sIndex - key.b), 26) + 97);
-        }
-        return simbolChar;
-    }
-
-    function translateTeks(teks, keyIndex, mode='e') {
-        let hasil = "";
-        for (let i = 0; i < teks.length; i++) {
-            hasil += (mode === 'e') ? encodeChar(teks[i], keyIndex) : decodeChar(teks[i], keyIndex);
-        }
-        return hasil;
-    }
-
-    // ==========================================
-    // LOGIKA CORE & UI
-    // ==========================================
-    const urlParams = new URLSearchParams(window.location.search);
-    const dataPesanUrl = urlParams.get('data');
-    const keyIdUrl = urlParams.get('v');
-
-    let modeAktif = "encoder";
-
-    if (dataPesanUrl && keyIdUrl) {
-        modeAktif = "decoder";
-        document.getElementById('section-decoder').style.display = "block";
-        initDecoder();
-    } else {
-        modeAktif = "encoder";
-        document.getElementById('section-encoder').style.display = "block";
-    }
-
-    function generateSecretLink() {
-        const pesanAsli = document.getElementById('input-pesan-asli').value;
-        if (!pesanAsli) { alert("Isi pesannya dulu, Bro!"); return; }
-
-        const keyIndex = Math.floor(Math.random() * keys.length);
-        const pesanTersandi = translateTeks(pesanAsli, keyIndex, 'e');
-        const vParam = (keyIndex * 13) + 7; 
-        const currentUrl = window.location.href.split('?')[0];
-        const finalUrl = `${currentUrl}?data=${encodeURIComponent(pesanTersandi)}&v=${vParam}`;
-
-        document.getElementById('output-link').value = finalUrl;
-        document.getElementById('result-link-area').style.display = "block";
-        
-        // Auto-scroll ke bawah supaya link langsung terlihat di layar HP
-        document.getElementById('result-link-area').scrollIntoView({ behavior: 'smooth' });
-    }
-
-    let percobaanKe = 1;
-    let jumlahKlik = 0;
-    let targetKlik = 0;
-    let realKeyIndex = 0;
-    let teksSandiMasuk = "";
-
-    const layarSandi = document.getElementById('display-sandi');
-    const btnDecode = document.getElementById('btn-decode');
-    const statusBar = document.getElementById('status-bar');
-    const statusPerisai = document.getElementById('status-perisai');
-
-    function hitungTarget(n) { return (10 * Math.pow(n, 2)) + (10 * n); }
-
-    function initDecoder() {
-        teksSandiMasuk = dataPesanUrl;
-        realKeyIndex = Math.floor((parseInt(keyIdUrl) - 7) / 13);
-        
-        if (isNaN(realKeyIndex) || realKeyIndex < 0 || realKeyIndex >= keys.length) {
-            layarSandi.innerText = "ERROR: DATA KORUP / LINK PALSU!";
-            btnDecode.disabled = true;
-            return;
-        }
-
-        layarSandi.innerText = teksSandiMasuk;
-        targetKlik = hitungTarget(percobaanKe);
-        statusBar.innerText = `Level ${percobaanKe}. Butuh ${targetKlik} klik otorisasi.`;
-    }
-
-    function klikDecode() {
-        jumlahKlik++;
-        
-        let dummyKeyIndex = Math.floor(Math.random() * keys.length);
-        let temporaryDecoded = translateTeks(teksSandiMasuk, realKeyIndex, 'd');
-        let glitchedTeks = translateTeks(temporaryDecoded, dummyKeyIndex, 'e');
-        
-        layarSandi.innerText = glitchedTeks;
-        layarSandi.style.color = "#ffff00";
-
-        statusBar.innerText = `Klik: ${jumlahKlik} / ${targetKlik} (Otorisasi...)`;
-
-        if (jumlahKlik >= targetKlik) {
-            btnDecode.disabled = true;
+    <script>
+        // === UI LOGIC: SWITCH TABS ===
+        function switchTab(tab) {
+            document.getElementById('sec-encrypt').style.display = tab === 'encrypt' ? 'block' : 'none';
+            document.getElementById('sec-decrypt').style.display = tab === 'decrypt' ? 'block' : 'none';
             
-            let pesanAsliTerbuka = translateTeks(teksSandiMasuk, realKeyIndex, 'd');
-            
-            layarSandi.innerText = pesanAsliTerbuka.toUpperCase();
-            layarSandi.style.color = "#ff0000";
-            layarSandi.style.backgroundColor = "#fff";
-            statusPerisai.innerText = "SISTEM JEBOL! MEMBACA DATA...";
-            statusBar.innerText = "PERINGATAN: PESAN AKAN HANCUR DALAM 2 DETIK!";
-
-            // Getaran HP (Haptic Feedback) jika didukung browser HP
-            if (navigator.vibrate) { navigator.vibrate([200, 100, 200]); }
-
-            setTimeout(() => {
-                layarSandi.style.color = "#00ff00";
-                layarSandi.style.backgroundColor = "transparent";
-                
-                percobaanKe++;
-                targetKlik = hitungTarget(percobaanKe);
-                jumlahKlik = 0;
-
-                let newDummyKey = Math.floor(Math.random() * keys.length);
-                layarSandi.innerText = translateTeks(pesanAsliTerbuka, newDummyKey, 'e');
-
-                btnDecode.disabled = false;
-                statusPerisai.innerText = "SISTEM KEAMANAN: RE-AKTIF (LEVEL UP)";
-                statusBar.innerText = `Keamanan pulih. Butuh ${targetKlik} klik berikutnya.`;
-                
-                alert("WAKTU HABIS! Pesan telah dienkripsi ulang dengan algoritma baru.");
-            }, 2000);
+            document.getElementById('btn-tab-enc').className = tab === 'encrypt' ? 'active' : '';
+            document.getElementById('btn-tab-dec').className = tab === 'decrypt' ? 'active' : '';
         }
-    }
-</script>
 
+        // === FUNGSI 1: GENERATE CODE ===
+        function generateCode() {
+            let input = document.getElementById('inputMsg').value;
+            if (!input) { alert("Message cannot be empty!"); return; }
+            
+            // Bungkus dalam base64 dengan prefix agar terlihat keren
+            let base64Msg = btoa(encodeURIComponent(input));
+            let finalCode = "ENIGMA-" + base64Msg;
+            
+            document.getElementById('output-area').style.display = 'block';
+            document.getElementById('outputCode').value = finalCode;
+        }
+
+        // === FUNGSI 2: INITIALIZE GAME DARI KODE ===
+        let pesanAsli = "";
+        function initSystem() {
+            let code = document.getElementById('inputCode').value.trim();
+            if (!code.startsWith("ENIGMA-")) {
+                alert("Invalid Code Format! Must start with ENIGMA-");
+                return;
+            }
+
+            try {
+                // Ekstrak base64 (hapus "ENIGMA-") lalu decode
+                let base64Part = code.substring(7);
+                pesanAsli = decodeURIComponent(atob(base64Part));
+                
+                // Sembunyikan input, munculkan game
+                document.getElementById('input-decrypt-area').style.display = 'none';
+                document.getElementById('game-area').style.display = 'block';
+                mulaiSistemTroll();
+            } catch (e) {
+                alert("Decryption failed. Code is broken.");
+            }
+        }
+
+        // === FUNGSI 3: MESIN TROLL (MINI GAME) ===
+        function mulaiSistemTroll() {
+            const simbol = ["@", "#", "$", "_", "&", "-", "+", "(", "/", "£", "¢", "¥", "π", "√", "×", "`", "§", "∆", "~", "%", "^", "*", "=", "{", "}", "|"];
+            const rumus = [
+                (x) => (2 * x + 5) % 26, (x) => (3 * x + 7) % 26, (x) => (5 * x + 11) % 26, 
+                (x) => (7 * x + 2) % 26, (x) => (Math.pow(x, 2) + 3) % 26
+            ];
+
+            let percobaanKe = 1;
+            let jumlahKlik = 0;
+            // Target awal 10 klik biar gak kelamaan ngetesnya (bisa diganti rumusnya)
+            let targetKlik = (10 * Math.pow(percobaanKe, 2)); 
+            
+            let layar = document.getElementById("layar-sandi");
+            let btn = document.getElementById("btn-clicker");
+            let status = document.getElementById("status-victim");
+
+            function generateSandi(teks, indeksRumus) {
+                let hasil = "";
+                let teksLower = teks.toLowerCase();
+                for (let i = 0; i < teksLower.length; i++) {
+                    let charCode = teksLower.charCodeAt(i);
+                    if (charCode >= 97 && charCode <= 122) {
+                        let x = charCode - 97;
+                        hasil += simbol[Math.abs(rumus[indeksRumus](x))];
+                    } else { hasil += teksLower[i]; }
+                }
+                return hasil;
+            }
+
+            layar.innerText = generateSandi(pesanAsli, 0);
+
+            window.klikDecode = function() {
+                jumlahKlik++;
+                let rumusAcak = Math.floor(Math.random() * rumus.length);
+                layar.innerText = generateSandi(pesanAsli, rumusAcak);
+                status.innerText = `Brute Force Progress: ${jumlahKlik} clicks (Alg: #${rumusAcak + 1})`;
+
+                if (jumlahKlik >= targetKlik) {
+                    // MUNCUL PESAN ASLI
+                    layar.innerText = pesanAsli.toUpperCase();
+                    layar.style.color = "#00ff00";
+                    btn.disabled = true;
+                    status.innerText = "FIREWALL BREACHED! VIEWING DATA...";
+
+                    setTimeout(() => {
+                        percobaanKe++;
+                        targetKlik = (10 * Math.pow(percobaanKe, 2));
+                        jumlahKlik = 0;
+                        layar.style.color = "#fff";
+                        layar.innerText = generateSandi(pesanAsli, Math.floor(Math.random() * rumus.length));
+                        btn.disabled = false;
+                        status.innerText = `Firewall Restored. Target increased.`;
+                    }, 2000);
+                }
+            };
+        }
+    </script>
 </body>
 </html>
