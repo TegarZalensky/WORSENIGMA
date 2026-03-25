@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enigma Decode</title>
+    <style>
+        body { background-color: #0a0a0a; color: #00ff00; font-family: 'Courier New', Courier, monospace; text-align: center; padding-top: 20%; }
+        #layar-sandi { font-size: 24px; letter-spacing: 3px; margin-bottom: 30px; word-wrap: break-word; padding: 0 20px; min-height: 50px; }
+        button { background-color: #00ff00; color: #000; border: none; padding: 15px 30px; font-size: 18px; font-weight: bold; cursor: pointer; border-radius: 5px; }
+        button:active { background-color: #00cc00; transform: scale(0.95); }
+        button:disabled { background-color: #555; color: #222; cursor: not-allowed; }
+        #status { margin-top: 20px; font-size: 14px; color: #888; }
+    </style>
+</head>
+<body>
+
+    <div id="layar-sandi">MENGINISIALISASI SANDI...</div>
+    <button id="btn-decode" onclick="klikDecode()">[ DECODE ]</button>
+    <div id="status">Target sistem: Terkunci</div>
+
+    <script>
+        // Pesan rahasia asli
+        const pesanAsli = "woi bangsat semua orang punya rencana tai! Gak usah alesan aja";
+        
+        // 26 Simbol pemetaan
+        const simbol = ["@", "#", "$", "_", "&", "-", "+", "(", "/", "£", "¢", "¥", "π", "√", "×", "`", "§", "∆", "~", "%", "^", "*", "=", "{", "}", "|"];
+
+        // Contoh 5 dari 20 Rumus Matematika (kamu bisa tambah sampai 20 array function)
+        // x adalah urutan abjad (0-25)
+        const rumus = [
+            (x) => (2 * x + 5) % 26,
+            (x) => (3 * x + 7) % 26,
+            (x) => (5 * x + 11) % 26,
+            (x) => (7 * x + 2) % 26,
+            (x) => (Math.pow(x, 2) + 3) % 26
+        ];
+
+        let percobaanKe = 1; // n
+        let jumlahKlik = 0;
+        let targetKlik = hitungTarget(percobaanKe);
+        let layar = document.getElementById("layar-sandi");
+        let btn = document.getElementById("btn-decode");
+        let status = document.getElementById("status");
+
+        // Fungsi persamaan matematika untuk target klik: T(n) = 10n^2 + 10n
+        function hitungTarget(n) {
+            return (10 * Math.pow(n, 2)) + (10 * n);
+        }
+
+        // Mesin Pengubah Teks ke Simbol
+        function generateSandi(teks, indeksRumus) {
+            let hasil = "";
+            let teksLower = teks.toLowerCase();
+            
+            for (let i = 0; i < teksLower.length; i++) {
+                let charCode = teksLower.charCodeAt(i);
+                // Jika huruf a-z
+                if (charCode >= 97 && charCode <= 122) {
+                    let x = charCode - 97; // a=0, b=1...
+                    let hasilRumus = rumus[indeksRumus](x);
+                    hasil += simbol[Math.abs(hasilRumus)]; // Hindari minus
+                } else {
+                    // Biarkan spasi dan tanda baca tetap sama
+                    hasil += teksLower[i];
+                }
+            }
+            return hasil;
+        }
+
+        // Tampilan awal acak
+        layar.innerText = generateSandi(pesanAsli, 0);
+
+        // Fungsi saat tombol diklik
+        function klikDecode() {
+            jumlahKlik++;
+            
+            // 1. Acak rumus setiap kali klik!
+            let rumusAcak = Math.floor(Math.random() * rumus.length);
+            layar.innerText = generateSandi(pesanAsli, rumusAcak);
+            
+            status.innerText = `Klik: ${jumlahKlik} / ??? (Rumus aktif: #${rumusAcak + 1})`;
+
+            // 2. Cek apakah klik sudah mencapai target
+            if (jumlahKlik >= targetKlik) {
+                // JEPRET! Tampilkan pesan asli
+                layar.innerText = pesanAsli.toUpperCase();
+                layar.style.color = "#ff0000"; // Ubah warna jadi merah biar dramatis
+                btn.disabled = true; // Kunci tombol
+                status.innerText = "SISTEM TERBUKA SELAMA 2 DETIK!";
+
+                // 3. Timer 2 detik sebelum dikunci lagi
+                setTimeout(() => {
+                    percobaanKe++; // Naik level
+                    targetKlik = hitungTarget(percobaanKe); // Hitung target baru pakai rumus
+                    jumlahKlik = 0; // Reset klik
+                    
+                    // Kembalikan ke tampilan sandi
+                    layar.style.color = "#00ff00";
+                    let rumusBaru = Math.floor(Math.random() * rumus.length);
+                    layar.innerText = generateSandi(pesanAsli, rumusBaru);
+                    
+                    btn.disabled = false; // Buka kunci tombol
+                    status.innerText = `Sistem kembali terkunci. (Level Kemanan Naik)`;
+                }, 2000);
+            }
+        }
+    </script>
+</body>
+</html>
