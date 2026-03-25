@@ -1,178 +1,162 @@
-<html>
+<!DOCTYPE html>
+<html lang="id">
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Dekripsi Data</title>
-</head>
-<body bgcolor="#FFFFFF" text="#000000" style="font-family: 'Times New Roman', Times, serif; padding: 20px;">
-
-    <h1>Sistem Sandi V1.0</h1>
-    <hr>
-
-    <div id="menu-utama">
-        <h3>1. Buat Sandi (Hanya Code)</h3>
-        <textarea id="inputMsg" rows="3" style="width: 100%; max-width: 400px;"></textarea><br>
-        <button onclick="buatKode()">Generate Code</button><br><br>
-        <b>Copy Code Ini:</b><br>
-        <textarea id="outputCode" rows="2" style="width: 100%; max-width: 400px; background-color: #eee;" readonly></textarea>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Sandi Polosan</title>
+    <style>
+        /* Desain polosan, background putih, rapi di HP */
+        body { 
+            font-family: sans-serif; 
+            padding: 20px; 
+            background: white; 
+            color: black; 
+            max-width: 500px; 
+            margin: auto; 
+        }
+        textarea { 
+            width: 100%; 
+            height: 100px; 
+            margin-bottom: 10px; 
+            box-sizing: border-box;
+            padding: 10px;
+        }
+        button { 
+            padding: 10px; 
+            width: 100%; 
+            cursor: pointer;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+        hr { margin: 20px 0; border: 0; border-top: 1px dashed #ccc; }
+        .hidden { display: none; }
         
-        <br><br><hr><br>
+        /* Area Troll Game */
+        #game-area { 
+            border: 1px solid black; 
+            padding: 20px; 
+            text-align: center; 
+            background: #f9f9f9;
+        }
+        #layar-sandi { 
+            font-size: 18px; 
+            word-wrap: break-word; 
+            margin-bottom: 15px; 
+            font-family: monospace; 
+            min-height: 50px;
+        }
+    </style>
+</head>
+<body>
 
-        <h3>2. Pecahkan Sandi</h3>
-        <b>Paste Code Di Sini:</b><br>
-        <textarea id="inputDecode" rows="2" style="width: 100%; max-width: 400px;"></textarea><br>
-        <button onclick="inisialisasiTroll()">Mulai Dekripsi</button>
+    <div id="buat-sandi">
+        <h3>1. Buat Sandi</h3>
+        <p>Ketik pesan lu di sini:</p>
+        <textarea id="inputTeks"></textarea>
+        <button onclick="enkripsi()">Ubah Jadi Simbol</button>
+        <p>Copy teks aneh ini, kirim ke WA temen lu:</p>
+        <textarea id="outputSimbol" readonly></textarea>
     </div>
 
-    <div id="area-troll" style="display: none; text-align: left;">
-        <b>Proses Dekripsi Berjalan:</b><br>
-        <textarea id="layar-sandi" rows="5" style="width: 100%; max-width: 400px;" readonly>MEMUAT...</textarea><br><br>
-        
-        <b id="pesan-biner" style="color: red; font-family: monospace;"></b><br><br>
-        
-        <button id="btn-decode" onclick="klikDecode()" style="padding: 10px 20px;">[ DECODE ]</button>
-        <br><br><br><br><br><br><br> <i><span id="status-teks">Klik tombol untuk memproses lapisan keamanan...</span></i>
+    <hr>
+
+    <div id="baca-sandi">
+        <h3>2. Pecahkan Sandi</h3>
+        <p>Paste teks aneh dari chat ke sini:</p>
+        <textarea id="inputSimbol"></textarea>
+        <button onclick="mulaiTroll()">Mulai Dekripsi</button>
+    </div>
+
+    <div id="game-area" class="hidden">
+        <p>Sistem Terkunci. Hancurkan perisai untuk membaca pesan.</p>
+        <div id="layar-sandi">---</div>
+        <button id="btn-klik" onclick="klikDecode()">[ DECODE ]</button>
+        <p id="status">Klik: 0</p>
     </div>
 
     <script>
-        // 20 Rumus Matematika Modulo 26
-        const rumus = [
-            (x) => (2*x + 5) % 26, (x) => (3*x + 7) % 26, (x) => (5*x + 11) % 26, (x) => (7*x + 2) % 26,
-            (x) => (x*x + 3) % 26, (x) => (2*x*x + 5) % 26, (x) => (13*x + 13) % 26, (x) => (19*x*x + 7*x + 2) % 26
-        ];
-        const simbol = ["@", "#", "$", "_", "&", "-", "+", "(", "/", "£", "¢", "¥", "π", "√", "×", "`", "§", "∆", "~", "%", "^", "*", "=", "{", "}", "|"];
+        // Kamus Simbol Rahasia (A-Z diubah jadi simbol aneh)
+        const kamus = {
+            'a':'¢', 'b':'£', 'c':'¥', 'd':'π', 'e':'√', 'f':'×', 'g':'§', 'h':'∆', 
+            'i':'~', 'j':'|', 'k':'/', 'l':'<', 'm':'>', 'n':'{', 'o':'}', 'p':'[', 
+            'q':']', 'r':'¦', 's':'‡', 't':'†', 'u':'µ', 'v':'¶', 'w':'ø', 'x':'¿', 
+            'y':'¡', 'z':'∞', ' ': ' '
+        };
         
-        // Kumpulan ejekan biner
-        const binerEjekan = [
-            "01001110 01011001 01000101 01010010 01000001 01001000 00100000 01000001 01001010 01000001", // NYERAH AJA
-            "01001100 01001111 01010111 00100000 01001001 01010001", // LOW IQ
-            "01000010 01001111 01000100 01001111 01001000", // BODOH
-            "01000011 01010101 01001101 01000001 00100000 01010011 01000101 01000111 01001001 01001110 01001001 00111111" // CUMA SEGINI?
-        ];
+        // Buat kebalikannya (Simbol ke Huruf) untuk mesin dekripsi
+        const kebalikanKamus = {};
+        for(let huruf in kamus) {
+            kebalikanKamus[kamus[huruf]] = huruf;
+        }
 
-        let pesanAsli = "";
+        // FUNGSI BUAT LU (Ubah teks jadi simbol)
+        function enkripsi() {
+            let teks = document.getElementById('inputTeks').value.toLowerCase();
+            let hasil = '';
+            for(let huruf of teks) {
+                hasil += kamus[huruf] || huruf; // Kalau gak ada di kamus, biarin aja (kayak tanda baca)
+            }
+            document.getElementById('outputSimbol').value = hasil;
+        }
+
+        // FUNGSI BUAT TEMEN LU (Mulai Game)
+        let pesanAsli = '';
+        let targetKlik = 15; // Berapa kali dia harus ngeklik
         let jumlahKlik = 0;
 
-        // FUNGSI 1: BUAT KODE (Tanpa URL)
-        function buatKode() {
-            let input = document.getElementById('inputMsg').value;
-            if (!input) { alert("Isi teksnya dulu."); return; }
-            // Bungkus pakai format khas
-            let kodeSandi = "SND-" + btoa(encodeURIComponent(input));
-            document.getElementById('outputCode').value = kodeSandi;
+        function mulaiTroll() {
+            let simbolMasuk = document.getElementById('inputSimbol').value;
+            if(!simbolMasuk) return alert("Paste sandinya dulu!");
+
+            pesanAsli = '';
+            // Terjemahkan balik ke dalam sistem (belum dikasih liat ke temen lu)
+            for(let simbol of simbolMasuk) {
+                pesanAsli += kebalikanKamus[simbol] || simbol;
+            }
+
+            // Munculkan area game
+            document.getElementById('game-area').classList.remove('hidden');
+            document.getElementById('baca-sandi').classList.add('hidden'); // Sembunyiin kolom paste
+            document.getElementById('buat-sandi').classList.add('hidden'); // Sembunyiin kolom buat
+            
+            // Tampilkan acakan visual awal (biar kelihatan pusing)
+            acakVisual();
         }
 
-        // FUNGSI 2: CEK KODE INPUT
-        function inisialisasiTroll() {
-            let inputSandi = document.getElementById('inputDecode').value.trim();
-            if (!inputSandi.startsWith("SND-")) {
-                alert("Kode tidak valid. Harus diawali SND-");
-                return;
+        // FUNGSI TROLL CLICKER
+        function acakVisual() {
+            // Ini cuma buat efek animasi glitch di layar
+            let karakterAcak = "ABCDEFGHIJKLMNOPQRSTUVWXYZ@#$%&*!?";
+            let teksGlitch = "";
+            for(let i=0; i<pesanAsli.length; i++) {
+                if(pesanAsli[i] === ' ') teksGlitch += ' ';
+                else teksGlitch += karakterAcak.charAt(Math.floor(Math.random() * karakterAcak.length));
             }
-            try {
-                // Buang "SND-" lalu decode
-                pesanAsli = decodeURIComponent(atob(inputSandi.substring(4)));
-                
-                // Pindah Tampilan
-                document.getElementById('menu-utama').style.display = 'none';
-                document.getElementById('area-troll').style.display = 'block';
-                
-                document.getElementById("layar-sandi").value = ubahKeSimbol(pesanAsli, 0);
-            } catch (e) {
-                alert("Sistem gagal memuat kode.");
-            }
+            document.getElementById('layar-sandi').innerText = teksGlitch;
         }
 
-        // MESIN PENGUBAH SIMBOL
-        function ubahKeSimbol(teks, indeksRumus) {
-            let hasil = "";
-            let teksLower = teks.toLowerCase();
-            for (let i = 0; i < teksLower.length; i++) {
-                let kode = teksLower.charCodeAt(i);
-                if (kode >= 97 && kode <= 122) {
-                    let x = kode - 97;
-                    let hasilRumus = Math.abs(rumus[indeksRumus](x));
-                    hasil += simbol[hasilRumus % 26];
-                } else { hasil += teksLower[i]; }
-            }
-            return hasil;
-        }
-
-        // MESIN PENYIKSAAN UTAMA (Klik Decode)
-        window.klikDecode = function() {
+        function klikDecode() {
             jumlahKlik++;
-            let btn = document.getElementById("btn-decode");
-            let layar = document.getElementById("layar-sandi");
-            let statusInfo = document.getElementById("status-teks");
-            let layarBiner = document.getElementById("pesan-biner");
+            acakVisual(); // Layar berubah tiap diklik
+            document.getElementById('status').innerText = `Klik: ${jumlahKlik} / ${targetKlik}`;
 
-            // 1. Acak Sandi
-            let rumusAcak = Math.floor(Math.random() * rumus.length); 
-            layar.value = ubahKeSimbol(pesanAsli, rumusAcak);
-            statusInfo.innerText = "Klik terdaftar: " + jumlahKlik;
-
-            // 2. Sarkasme Biner (Setiap kelipatan 25 klik)
-            if (jumlahKlik % 25 === 0) {
-                let indeksBiner = (jumlahKlik / 25) % binerEjekan.length;
-                layarBiner.innerText = "SYSTEM MSG: " + binerEjekan[indeksBiner];
-            } else if (jumlahKlik % 25 === 5) {
-                // Hilang setelah 5 klik dari pesan biner muncul
-                layarBiner.innerText = "";
-            }
-
-            // 3. Fase Menghilang (Klik 100+)
-            if (jumlahKlik >= 100) {
-                if (jumlahKlik % 3 === 0) {
-                    btn.style.display = 'none'; // Tombol lenyap
-                    statusInfo.innerText = "Error: UI terputus. Mengembalikan tombol...";
-                    
-                    // Rumus waktu muncul lagi
-                    let waktuTunggu = (jumlahKlik % 5 + 1) * 600; 
-                    setTimeout(() => {
-                        btn.style.display = 'inline-block';
-                        statusInfo.innerText = "Klik terdaftar: " + jumlahKlik;
-                    }, waktuTunggu);
-                }
-            }
-
-            // 4. Fase Membesar (Klik 150+)
-            let skala = 1;
-            if (jumlahKlik >= 150) {
-                skala = 1 + ((jumlahKlik - 150) * 0.05); // Bengkak terus
-            }
-
-            // 5. Fase Teleportasi Acak (Klik 200+)
-            if (jumlahKlik >= 200) {
-                btn.style.position = 'fixed';
-                let acakX = Math.floor(Math.random() * 70); // Max 70% biar ga keluar layar
-                let acakY = Math.floor(Math.random() * 70) + 10;
-                btn.style.left = acakX + '%';
-                btn.style.top = acakY + '%';
-                btn.style.zIndex = '9999';
-            }
-
-            // Gabungkan efek Skala (Berlaku untuk fase 150 dan 200)
-            btn.style.transform = `scale(${skala})`;
-
-            // 6. GARIS FINISH (Klik 250 - Baru dikasih lihat)
-            if (jumlahKlik === 250) {
-                layar.value = pesanAsli; // Tampilkan teks asli!
-                btn.style.display = 'none'; // Tombol mati selamanya
-                layarBiner.innerText = "SYSTEM FATAL ERROR: ENCRYPTION BROKEN";
-                statusInfo.innerText = "PESAN TERBACA SELAMA 2 DETIK!";
+            if(jumlahKlik >= targetKlik) {
+                // JEPRET! Muncul pesan asli 2 detik
+                document.getElementById('layar-sandi').innerText = pesanAsli.toUpperCase();
+                document.getElementById('layar-sandi').style.color = "red";
+                document.getElementById('btn-klik').disabled = true;
+                document.getElementById('status').innerText = "PESAN TERBUKA 2 DETIK!";
 
                 setTimeout(() => {
-                    // Balik reset gila-gilaan
+                    targetKlik += 15; // Naik level (makin banyak kliknya)
                     jumlahKlik = 0;
-                    layar.value = ubahKeSimbol(pesanAsli, Math.floor(Math.random() * 8));
-                    btn.style.display = 'inline-block';
-                    btn.style.position = 'static'; // Balikin posisi normal
-                    btn.style.transform = 'scale(1)'; // Balikin ukuran
-                    statusInfo.innerText = "Sistem mengunci ulang ke Level 2.";
-                    layarBiner.innerText = "";
-                    alert("Waktu habis! Mulai dari awal lagi ya hehe.");
-                }, 2000); 
+                    document.getElementById('layar-sandi').style.color = "black";
+                    document.getElementById('btn-klik').disabled = false;
+                    document.getElementById('status').innerText = "Terkunci lagi! Target klik naik.";
+                    acakVisual();
+                }, 2000);
             }
-        };
+        }
     </script>
 </body>
 </html>
