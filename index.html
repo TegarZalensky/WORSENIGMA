@@ -1,84 +1,37 @@
-<!DOCTYPE html>
-<html lang="id">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Sistem Enkripsi</title>
-    <style>
-        /* Reset dasar biar bener-bener polos dan rapi di HP */
-        * { box-sizing: border-box; }
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #ffffff;
-            color: #000000;
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .container {
-            width: 100%;
-            max-width: 400px;
-            margin-top: 20px;
-        }
-        textarea {
-            width: 100%;
-            height: 100px;
-            margin-bottom: 10px;
-            padding: 10px;
-            font-size: 14px;
-            border: 1px solid #000;
-        }
-        button {
-            width: 100%;
-            padding: 15px;
-            font-size: 16px;
-            border: 1px solid #000;
-            background-color: #eee;
-            cursor: pointer;
-            margin-bottom: 15px;
-        }
-        button:active { background-color: #ccc; }
-        button:disabled { background-color: #aaa; cursor: not-allowed; }
-        #layar-sandi {
-            font-family: monospace;
-            font-size: 24px;
-            word-wrap: break-word;
-            margin: 20px 0;
-            min-height: 80px;
-            text-align: center;
-        }
-        .info-text { font-size: 14px; color: #555; text-align: center; margin-bottom: 10px;}
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Sandi</title>
 </head>
-<body>
+<body bgcolor="#FFFFFF" text="#000000">
 
-    <div class="container">
-        <div id="mode-creator">
-            <h3 style="text-align: center;">Buat Pesan Rahasia</h3>
-            <p class="info-text">Ketik pesanmu di bawah ini:</p>
-            <textarea id="inputMsg" placeholder="Ketik pesan di sini..."></textarea>
-            <button onclick="buatLink()">Generate Link</button>
-            
-            <div id="hasil-link" style="display: none;">
-                <p class="info-text">Copy link ini dan kirim ke target:</p>
-                <textarea id="outputLink" readonly></textarea>
-            </div>
-        </div>
+    <h1>Form Sandi Rahasia</h1>
+    <hr>
 
-        <div id="mode-victim" style="display: none;">
-            <h3 style="text-align: center;">Pesan Terenkripsi Ditemukan</h3>
-            <p class="info-text" id="status-teks">Sistem terkunci. Butuh dekripsi manual.</p>
-            
-            <div id="layar-sandi">MEMUAT...</div>
-            
-            <button id="btn-decode" onclick="klikDecode()">DECODE PESAN</button>
+    <div id="mode-creator">
+        <b>Insert Text:</b><br>
+        <textarea id="inputMsg" rows="5" style="width: 90%; max-width: 350px;"></textarea><br><br>
+        <button onclick="buatLink()">Submit</button>
+        <br><br>
+        
+        <div id="hasil-link" style="display: none;">
+            <b>Copy Link Ini:</b><br>
+            <textarea id="outputLink" rows="4" style="width: 90%; max-width: 350px;" readonly></textarea>
         </div>
     </div>
 
+    <div id="mode-victim" style="display: none;">
+        <b>Pesan Terenkripsi:</b><br>
+        <textarea id="layar-sandi" rows="5" style="width: 90%; max-width: 350px;" readonly>MEMUAT...</textarea><br><br>
+        
+        <button id="btn-decode" onclick="klikDecode()">Decode</button>
+        <br><br>
+        
+        <i><span id="status-teks">Status: Menunggu input pengguna...</span></i>
+    </div>
+
     <script>
-        // 20 Rumus Matematika (Kombinasi linear dan kuadratik, dimodulo 26)
+        // 20 Rumus Matematika
         const rumus = [
             (x) => (2*x + 5) % 26, (x) => (3*x + 7) % 26, (x) => (5*x + 11) % 26, (x) => (7*x + 2) % 26, (x) => (11*x + 3) % 26,
             (x) => (17*x + 1) % 26, (x) => (19*x + 4) % 26, (x) => (23*x + 5) % 26, (x) => (25*x + 9) % 26, (x) => (x*x + 3) % 26,
@@ -88,14 +41,11 @@
         
         const simbol = ["@", "#", "$", "_", "&", "-", "+", "(", "/", "£", "¢", "¥", "π", "√", "×", "`", "§", "∆", "~", "%", "^", "*", "=", "{", "}", "|"];
         
-        // Cek URL apakah ada pesan tersembunyi
         const urlParams = new URLSearchParams(window.location.search);
         const encodedMsg = urlParams.get('m');
         let pesanAsli = "";
 
-        // Logika Perpindahan Layar
         if (encodedMsg) {
-            // Sembunyikan form input, tampilkan layar game untuk korban
             document.getElementById('mode-creator').style.display = 'none';
             document.getElementById('mode-victim').style.display = 'block';
             
@@ -103,15 +53,14 @@
                 pesanAsli = decodeURIComponent(atob(encodedMsg));
                 jalankanMesinTroll();
             } catch (e) {
-                document.getElementById('layar-sandi').innerText = "LINK RUSAK / INVALID.";
+                document.getElementById('layar-sandi').value = "Error: Invalid URL.";
                 document.getElementById('btn-decode').style.display = 'none';
             }
         }
 
-        // FUNGSI 1: Untuk Kamu (Pembuat Link)
         function buatLink() {
             let input = document.getElementById('inputMsg').value;
-            if (!input) { alert("Isi pesannya dulu dong!"); return; }
+            if (!input) { alert("Teks tidak boleh kosong."); return; }
             
             let base64Msg = btoa(encodeURIComponent(input));
             let linkBaru = window.location.origin + window.location.pathname + "?m=" + base64Msg;
@@ -120,71 +69,53 @@
             document.getElementById('outputLink').value = linkBaru;
         }
 
-        // FUNGSI 2: Untuk Target/Korban (Sistem Game Klik)
         function jalankanMesinTroll() {
             let level = 1;
             let jumlahKlik = 0;
-            let targetKlik = hitungTarget(level);
+            // Target klik: Level 1=10 klik, Level 2=40 klik, Level 3=90 klik, dst.
+            let targetKlik = 10 * Math.pow(level, 2); 
             
             let layar = document.getElementById("layar-sandi");
             let btn = document.getElementById("btn-decode");
             let statusInfo = document.getElementById("status-teks");
 
-            // Fungsi target klik dengan rumus kuadratik (20, 60, 120 klik dst...)
-            function hitungTarget(n) { return (10 * Math.pow(n, 2)) + (10 * n); }
-
-            // Mesin pengubah huruf ke simbol
             function ubahKeSimbol(teks, indeksRumus) {
                 let hasil = "";
                 let teksLower = teks.toLowerCase();
                 for (let i = 0; i < teksLower.length; i++) {
                     let kode = teksLower.charCodeAt(i);
-                    if (kode >= 97 && kode <= 122) { // Cuma ubah huruf a-z
+                    if (kode >= 97 && kode <= 122) {
                         let x = kode - 97;
                         let hasilRumus = Math.abs(rumus[indeksRumus](x));
                         hasil += simbol[hasilRumus % 26];
                     } else {
-                        hasil += teksLower[i]; // Spasi atau koma biarin aja
+                        hasil += teksLower[i];
                     }
                 }
                 return hasil;
             }
 
-            // Tampilkan sandi saat web pertama dibuka
-            layar.innerText = ubahKeSimbol(pesanAsli, 0);
+            layar.value = ubahKeSimbol(pesanAsli, 0);
 
-            // Aksi saat tombol ditekan
             window.klikDecode = function() {
                 jumlahKlik++;
-                
-                // Tiap kali klik, rumus diacak dari 20 pilihan!
                 let rumusAcak = Math.floor(Math.random() * 20); 
-                layar.innerText = ubahKeSimbol(pesanAsli, rumusAcak);
-                
-                statusInfo.innerText = `Klik: ${jumlahKlik} / ??? (Sandi bermutasi!)`;
+                layar.value = ubahKeSimbol(pesanAsli, rumusAcak);
+                statusInfo.innerText = "Sistem sibuk... (" + jumlahKlik + " klik)";
 
-                // Cek apakah klik sudah mencapai target
                 if (jumlahKlik >= targetKlik) {
-                    // Berhasil! Tampilkan pesan asli 2 detik
-                    layar.innerText = pesanAsli;
-                    layar.style.color = "red";
-                    layar.style.fontWeight = "bold";
+                    layar.value = pesanAsli;
                     btn.disabled = true;
-                    statusInfo.innerText = "SISTEM JEBOL! MEMBACA PESAN...";
+                    statusInfo.innerText = "Berhasil! Teks terbuka selama 2 detik.";
 
-                    // Timer 2 detik sebelum dikunci dan direset
                     setTimeout(() => {
-                        level++; // Naik level
-                        targetKlik = hitungTarget(level); // Hitung target baru yang lebih gila
-                        jumlahKlik = 0; // Reset klik
+                        level++;
+                        targetKlik = 10 * Math.pow(level, 2);
+                        jumlahKlik = 0;
                         
-                        // Kembalikan ke wujud sandi
-                        layar.style.color = "black";
-                        layar.style.fontWeight = "normal";
-                        layar.innerText = ubahKeSimbol(pesanAsli, Math.floor(Math.random() * 20));
-                        
+                        layar.value = ubahKeSimbol(pesanAsli, Math.floor(Math.random() * 20));
                         btn.disabled = false;
-                        statusInfo.innerText = `Sistem mengunci kembali. Pertahanan level ${level} aktif.`;
+                        statusInfo.innerText = "Koneksi terputus. Target klik meningkat ke level " + level + ".";
                     }, 2000); 
                 }
             };
